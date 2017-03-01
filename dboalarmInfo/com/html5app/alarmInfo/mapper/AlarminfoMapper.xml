@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.html5app.alarmInfo.mapper.AlarminfoMapper" >
+  <resultMap id="BaseResultMap" type="com.html5app.alarmInfo.entity.Alarminfo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="AlmPosition" property="almposition" jdbcType="VARCHAR" />
+    <result column="AlmPoint" property="almpoint" jdbcType="VARCHAR" />
+    <result column="AlmTime" property="almtime" jdbcType="TIMESTAMP" />
+    <result column="AlmInfo" property="alminfo" jdbcType="VARCHAR" />
+    <result column="AlmStatus" property="almstatus" jdbcType="TINYINT" />
+    <result column="AlmClass" property="almclass" jdbcType="TINYINT" />
+    <result column="AlmValue" property="almvalue" jdbcType="REAL" />
+    <result column="AlmNo" property="almno" jdbcType="INTEGER" />
+    <result column="AlmMono" property="almmono" jdbcType="VARCHAR" />
+    <result column="sendFlag" property="sendflag" jdbcType="TINYINT" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, AlmPosition, AlmPoint, AlmTime, AlmInfo, AlmStatus, AlmClass, AlmValue, AlmNo, 
+    AlmMono, sendFlag
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.html5app.alarmInfo.entity.AlarminfoExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from AlarmInfo
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from AlarmInfo
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from AlarmInfo
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.html5app.alarmInfo.entity.AlarminfoExample" >
+    delete from AlarmInfo
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.html5app.alarmInfo.entity.Alarminfo" >
+    insert into AlarmInfo (id, AlmPosition, AlmPoint, 
+      AlmTime, AlmInfo, AlmStatus, 
+      AlmClass, AlmValue, AlmNo, 
+      AlmMono, sendFlag)
+    values (#{id,jdbcType=BIGINT}, #{almposition,jdbcType=VARCHAR}, #{almpoint,jdbcType=VARCHAR}, 
+      #{almtime,jdbcType=TIMESTAMP}, #{alminfo,jdbcType=VARCHAR}, #{almstatus,jdbcType=TINYINT}, 
+      #{almclass,jdbcType=TINYINT}, #{almvalue,jdbcType=REAL}, #{almno,jdbcType=INTEGER}, 
+      #{almmono,jdbcType=VARCHAR}, #{sendflag,jdbcType=TINYINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.html5app.alarmInfo.entity.Alarminfo" >
+    insert into AlarmInfo
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="almposition != null" >
+        AlmPosition,
+      </if>
+      <if test="almpoint != null" >
+        AlmPoint,
+      </if>
+      <if test="almtime != null" >
+        AlmTime,
+      </if>
+      <if test="alminfo != null" >
+        AlmInfo,
+      </if>
+      <if test="almstatus != null" >
+        AlmStatus,
+      </if>
+      <if test="almclass != null" >
+        AlmClass,
+      </if>
+      <if test="almvalue != null" >
+        AlmValue,
+      </if>
+      <if test="almno != null" >
+        AlmNo,
+      </if>
+      <if test="almmono != null" >
+        AlmMono,
+      </if>
+      <if test="sendflag != null" >
+        sendFlag,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="almposition != null" >
+        #{almposition,jdbcType=VARCHAR},
+      </if>
+      <if test="almpoint != null" >
+        #{almpoint,jdbcType=VARCHAR},
+      </if>
+      <if test="almtime != null" >
+        #{almtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="alminfo != null" >
+        #{alminfo,jdbcType=VARCHAR},
+      </if>
+      <if test="almstatus != null" >
+        #{almstatus,jdbcType=TINYINT},
+      </if>
+      <if test="almclass != null" >
+        #{almclass,jdbcType=TINYINT},
+      </if>
+      <if test="almvalue != null" >
+        #{almvalue,jdbcType=REAL},
+      </if>
+      <if test="almno != null" >
+        #{almno,jdbcType=INTEGER},
+      </if>
+      <if test="almmono != null" >
+        #{almmono,jdbcType=VARCHAR},
+      </if>
+      <if test="sendflag != null" >
+        #{sendflag,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.html5app.alarmInfo.entity.AlarminfoExample" resultType="java.lang.Integer" >
+    select count(*) from AlarmInfo
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update AlarmInfo
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.almposition != null" >
+        AlmPosition = #{record.almposition,jdbcType=VARCHAR},
+      </if>
+      <if test="record.almpoint != null" >
+        AlmPoint = #{record.almpoint,jdbcType=VARCHAR},
+      </if>
+      <if test="record.almtime != null" >
+        AlmTime = #{record.almtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.alminfo != null" >
+        AlmInfo = #{record.alminfo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.almstatus != null" >
+        AlmStatus = #{record.almstatus,jdbcType=TINYINT},
+      </if>
+      <if test="record.almclass != null" >
+        AlmClass = #{record.almclass,jdbcType=TINYINT},
+      </if>
+      <if test="record.almvalue != null" >
+        AlmValue = #{record.almvalue,jdbcType=REAL},
+      </if>
+      <if test="record.almno != null" >
+        AlmNo = #{record.almno,jdbcType=INTEGER},
+      </if>
+      <if test="record.almmono != null" >
+        AlmMono = #{record.almmono,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sendflag != null" >
+        sendFlag = #{record.sendflag,jdbcType=TINYINT},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update AlarmInfo
+    set id = #{record.id,jdbcType=BIGINT},
+      AlmPosition = #{record.almposition,jdbcType=VARCHAR},
+      AlmPoint = #{record.almpoint,jdbcType=VARCHAR},
+      AlmTime = #{record.almtime,jdbcType=TIMESTAMP},
+      AlmInfo = #{record.alminfo,jdbcType=VARCHAR},
+      AlmStatus = #{record.almstatus,jdbcType=TINYINT},
+      AlmClass = #{record.almclass,jdbcType=TINYINT},
+      AlmValue = #{record.almvalue,jdbcType=REAL},
+      AlmNo = #{record.almno,jdbcType=INTEGER},
+      AlmMono = #{record.almmono,jdbcType=VARCHAR},
+      sendFlag = #{record.sendflag,jdbcType=TINYINT}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.html5app.alarmInfo.entity.Alarminfo" >
+    update AlarmInfo
+    <set >
+      <if test="almposition != null" >
+        AlmPosition = #{almposition,jdbcType=VARCHAR},
+      </if>
+      <if test="almpoint != null" >
+        AlmPoint = #{almpoint,jdbcType=VARCHAR},
+      </if>
+      <if test="almtime != null" >
+        AlmTime = #{almtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="alminfo != null" >
+        AlmInfo = #{alminfo,jdbcType=VARCHAR},
+      </if>
+      <if test="almstatus != null" >
+        AlmStatus = #{almstatus,jdbcType=TINYINT},
+      </if>
+      <if test="almclass != null" >
+        AlmClass = #{almclass,jdbcType=TINYINT},
+      </if>
+      <if test="almvalue != null" >
+        AlmValue = #{almvalue,jdbcType=REAL},
+      </if>
+      <if test="almno != null" >
+        AlmNo = #{almno,jdbcType=INTEGER},
+      </if>
+      <if test="almmono != null" >
+        AlmMono = #{almmono,jdbcType=VARCHAR},
+      </if>
+      <if test="sendflag != null" >
+        sendFlag = #{sendflag,jdbcType=TINYINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.html5app.alarmInfo.entity.Alarminfo" >
+    update AlarmInfo
+    set AlmPosition = #{almposition,jdbcType=VARCHAR},
+      AlmPoint = #{almpoint,jdbcType=VARCHAR},
+      AlmTime = #{almtime,jdbcType=TIMESTAMP},
+      AlmInfo = #{alminfo,jdbcType=VARCHAR},
+      AlmStatus = #{almstatus,jdbcType=TINYINT},
+      AlmClass = #{almclass,jdbcType=TINYINT},
+      AlmValue = #{almvalue,jdbcType=REAL},
+      AlmNo = #{almno,jdbcType=INTEGER},
+      AlmMono = #{almmono,jdbcType=VARCHAR},
+      sendFlag = #{sendflag,jdbcType=TINYINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <!-- 查询所有报警点 -->
+  
+  <select id="selectall" resultType="com.html5app.alarmInfo.entity.Alarminfo">
+  	select * from AlarmInfo
+  </select>
+</mapper>

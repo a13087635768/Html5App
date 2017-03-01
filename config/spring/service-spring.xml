@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation=" http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd 
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+
+<bean id="docdataService" class="com.html5app.docdata.service.impl.DocdataServiceImpl">
+	<property name="DocdataMapper" ref="docdataMapper"></property>
+</bean>
+
+<bean id="alarmInfoService" class="com.html5app.alarmInfo.service.impl.AlarmInfoServiceImpl">
+	<property name="AlarminfoMapper" ref="alarminfoMapper"></property>
+</bean>
+
+<bean id="usersService" class="com.html5app.users.service.Impl.UsersServiceImpl">
+	<property name="UsersMapper" ref="usersMapper"></property>
+</bean>
+
+<!-- 配置事务源  -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+<!-- 配置事务权限 -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes >
+		 <tx:method name="save*" propagation="REQUIRED"/>
+		 <tx:method name="delete*" propagation="REQUIRED"/>
+		 <tx:method name="update*" propagation="REQUIRED"/>
+		 <tx:method name="insert*" propagation="REQUIRED"/>
+		 <tx:method name="get*" propagation="SUPPORTS" read-only="true"/>
+		 <tx:method name="select*" propagation="SUPPORTS" read-only="true"/>
+		 <tx:method name="find*" propagation="SUPPORTS" read-only="true"/>
+		</tx:attributes>
+	</tx:advice>
+<!-- 配置aop -->
+
+<aop:config>
+<aop:pointcut expression="execution(* com.html5app.*.service.impl.*.*(..))" id="pt"/>
+<aop:advisor advice-ref="txAdvice" pointcut-ref="pt"/>
+<aop:aspect></aop:aspect>
+</aop:config>
+
+
+
+
+</beans>
