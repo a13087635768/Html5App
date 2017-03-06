@@ -4,20 +4,22 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
-import org.junit.Test;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.portlet.bind.annotation.ResourceMapping;
-
 import com.html5app.docdata.service.Docdataservice;
 import com.html5app.datassource.DataSourceContextHolder;
 import com.html5app.docdata.entity.Docdata;
+import com.html5app.docdata.entity.DocdataTimeAvgValue;
 import com.html5app.docdatamaputil.Maputil;
 
 import net.sf.json.JSONObject;
@@ -34,17 +36,19 @@ public class DocdataAction {
 	public Docdataservice docdataService;
 	
 	/**
+	 * 暂时停止使用 暂停时间 2017年3月3日 启用 selectavgvalue接口
 	 * @author SQ
-	 * @param Startdate 起始时间     yyy/mm/dd/HH/mm
-	 * @param enddate	结束时间    yyy/mm/dd/HH/mm
+	 * @param Startdate 起始时间     yyyy-MM-dd HH:mm:ss
+	 * @param enddate	结束时间    yyyy-MM-dd HH:mm:ss
 	 * @throws ParseException 时间解析异常错误码  1000
 	 * @throws IOException 查询结果输出异常 1001
+	 * @update 2017年3月3日   修改为指定机房的指定设备一段时间内的值
+	 * @param jfmc 机房名称
 	 */
 	@RequestMapping(value="datatime")
-	public void datatime(String Startdate , String enddate ,HttpServletResponse response) throws IOException {
+	public void datatime(String Startdate , String enddate ,HttpServletResponse response,String jfmc ) throws IOException {
 		DataSourceContextHolder.setDbType("dataSource1");
-
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyy/mm/dd/HH/mm");
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		 Date Startparse =null;
 		 Date endparse = null;
 			JSONObject jsonObject = new  JSONObject();
@@ -62,7 +66,7 @@ public class DocdataAction {
 				
 			} catch (IOException e1) {
 				response.getWriter().print("1001");
-				jsonObject.put("errorcode","1001");
+				jsonObject.put("error","1001");
 				out.print(jsonObject.toString());
 				
 			}
@@ -71,11 +75,23 @@ public class DocdataAction {
 		
 		Docdata docdata = new Docdata();
 		docdata.setDatatime(Startparse);
+		//**********update*************//
+		docdata.setDoctagname(jfmc);
+		//********update end************//
 		Docdata newdocdata = new Docdata();
 		newdocdata.setDatatime(endparse);
 		List<Docdata> list = docdataService.selectByExample(docdata,newdocdata);
-		jsonObject.put("data", list);
-		jsonObject.put("errorcode",null);
+		List Xdata= new ArrayList();
+		List Ydata= new ArrayList();
+		 SimpleDateFormat sdf =   new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+		
+	for (Docdata docdata2 : list) {
+		String str = sdf.format(docdata2.getDatatime());
+		Xdata.add(str);
+		Ydata.add(docdata2.getDocvalue());
+	}
+		jsonObject.put("Xdata", Xdata);
+		jsonObject.put("Ydata", Ydata);
 		out.print(jsonObject.toString());
 		
 
@@ -144,7 +160,79 @@ public class DocdataAction {
 		out.print(jsonObject.toString());
 		
 	}
+	/**
+	 * 查询当天的平均历史曲线
+	 * @param date 查询的时间
+	 * @param jfmc 机房名称设备名称参数名称
+	 * @throws IOException out对象异常
+	 */
+	@RequestMapping("selectavgvalue")
+	public void selectavgvalue(String date  ,HttpServletResponse response,String jfmc) throws IOException{
+		//每个小时的值
+		Map<String, String> datavalue= new HashMap<String, String>();
+		datavalue.put("1", "0");
+		datavalue.put("2", "0");
+		datavalue.put("3", "0");
+		datavalue.put("4", "0");
+		datavalue.put("5", "0");
+		datavalue.put("6", "0");
+		datavalue.put("7", "0");
+		datavalue.put("8", "0");
+		datavalue.put("9", "0");
+		datavalue.put("10", "0");
+		datavalue.put("11", "0");
+		datavalue.put("12", "0");
+		datavalue.put("13", "0");
+		datavalue.put("14", "0");
+		datavalue.put("15", "0");
+		datavalue.put("16", "0");
+		datavalue.put("17", "0");
+		datavalue.put("18", "0");
+		datavalue.put("19", "0");
+		datavalue.put("20", "0");
+		datavalue.put("21", "0");
+		datavalue.put("22", "0");
+		datavalue.put("23", "0");
+		datavalue.put("24", "0");
+		DataSourceContextHolder.setDbType("dataSource1");
+		 SimpleDateFormat simpleDateFormat =   new SimpleDateFormat( "yyyy-MM-dd" );
+		JSONObject jsonObject = new  JSONObject();
+		PrintWriter out = response.getWriter();
+		Calendar calendar = Calendar.getInstance();   
+		Date  Startparse = null;
+		Date  endparse = null;
+		try {
+			Startparse = simpleDateFormat.parse(date);
+		} catch (ParseException e) {
+			response.getWriter().print("1000");
+			jsonObject.put("error","1000");
+			out.print(jsonObject.toString());
+		}
+		calendar.setTime(Startparse);
+		//给传过来的时间+1天  进行查询 形成时间段
+		calendar.add(Calendar.DAY_OF_MONTH, +1);
+		endparse = calendar.getTime();
+		
+		//将map 转为list 返回json
+		List<String> hhvalue = new ArrayList<String>();
+		List<DocdataTimeAvgValue> selectavgvalue = docdataService.selectavgvalue(jfmc, Startparse, endparse);
+		//添加到map 中
+		for (DocdataTimeAvgValue docdataTimeAvgValue : selectavgvalue) {
+			String hh = docdataTimeAvgValue.getHh();
+			datavalue.put(hh, docdataTimeAvgValue.getValueavg());
+		}
+		//map 转为 list
+		for (int i = 0; i <datavalue.size(); i++) {
+			
+			hhvalue.add(datavalue.get(i+""));
+		}
+		jsonObject.put("data", hhvalue);
+		out.print(jsonObject.toString());
+	    
+	}
+	
 
+	
 	public Docdataservice getDocdataService() {
 		return docdataService;
 	}

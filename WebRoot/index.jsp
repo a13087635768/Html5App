@@ -22,9 +22,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
   <body>
 <script type="text/javascript">
-$.ajax({ url: "almposition.action",
+$.ajax({ url: "datatime.action",
 		type:"get",
-		data: {"almposition":"1"},
+		data: {"Startdate":"2014/2/12/00/00","enddate":"2014/2/20/00/00","jfmc":"jf1_ups1_dl"},
 		success: function(data){
   	  	 alert( data );
    		}

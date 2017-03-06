@@ -3,6 +3,7 @@ package com.html5app.docdata.service.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -11,6 +12,7 @@ import javax.annotation.Resource;
 import com.html5app.docdata.service.Docdataservice;
 import com.html5app.docdata.entity.Docdata;
 import com.html5app.docdata.entity.DocdataExample;
+import com.html5app.docdata.entity.DocdataTimeAvgValue;
 import com.html5app.docdata.entity.DocdataExample.Criteria;
 import com.html5app.docdata.mapper.DocdataMapper;
 
@@ -24,15 +26,23 @@ public class DocdataServiceImpl implements Docdataservice {
  * @param Docdata （前时间段）
  * @param newDocdata （后时间段）
  * @return 查询结果
+ * @update 指定机房设备一段时间内查询
  */
 	DocdataExample docdataExample = new DocdataExample();
 	public List<Docdata> selectByExample(Docdata Docdata ,Docdata newDocdata){
 		//时间段查询
 		if(Docdata.getDatatime()!=null){
 			DocdataExample docdataExample = new DocdataExample();
+			docdataExample.setOrderByClause("Datatime");
 			Criteria createCriteria = docdataExample.createCriteria();
-			createCriteria.andDatatimeBetween(Docdata.getDatatime(), newDocdata.getDatatime());
+			//********update************
+			//createCriteria.andDatatimeBetween(Docdata.getDatatime(), newDocdata.getDatatime());
+			 createCriteria.andDatatimeBetween(Docdata.getDatatime(), newDocdata.getDatatime());
+			 createCriteria.andDoctagnameEqualTo(Docdata.getDoctagname());
+			 
+			//********update end********
 			List<Docdata> selectByExample = docdataMapper.selectByExample(docdataExample);
+			
 			return selectByExample;
 		//名称查询
 		}else if(Docdata.getDoctagname()!=null&&newDocdata==null){
@@ -82,6 +92,14 @@ public class DocdataServiceImpl implements Docdataservice {
 		List<Docdata> selectByExample = docdataMapper.selectByExample(docdataExample);
 		return selectByExample;
 	}
+	
+	
+    public List<DocdataTimeAvgValue> selectavgvalue(String name,Date date ,Date enddate){
+    	List<DocdataTimeAvgValue> selectavgvalue = docdataMapper.selectavgvalue(name, date, enddate);
+    	return selectavgvalue;
+    }
+
+	
 	
 	public DocdataMapper getDocdataMapper() {
 		return docdataMapper;

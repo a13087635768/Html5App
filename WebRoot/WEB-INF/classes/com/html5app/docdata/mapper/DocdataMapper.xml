@@ -9,6 +9,14 @@
     <result column="DocCount" property="doccount" jdbcType="SMALLINT" />
     <result column="sendFlag" property="sendflag" jdbcType="TINYINT" />
   </resultMap>
+  
+    <resultMap id="selectavgvalue" type="com.html5app.docdata.entity.DocdataTimeAvgValue" >
+    <result column="valueavg" property="valueavg" jdbcType="VARCHAR" />
+    <result column="hh" property="hh" jdbcType="VARCHAR" />
+    <result column="DocTagName" property="DocTagName" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  
   <sql id="Example_Where_Clause" >
     <where >
       <foreach collection="oredCriteria" item="criteria" separator="or" >
@@ -225,4 +233,14 @@
     where DataTime = #{datatime,jdbcType=TIMESTAMP}
       and DocTagName = #{doctagname,jdbcType=VARCHAR}
   </update>
+  
+  <select id="selecttimeandname" resultMap="BaseResultMap">
+  SELECT   DataTime, DocTagName, DocValue, DocDelDate, DocCount, sendFlag  FROM  DocData WHERE (DataTime  between #{0} and #{1}) and (DocTagName = #{2})
+  
+  </select>
+  <select id="selectavgvalue" resultMap="selectavgvalue" >
+  <!-- #0 为 机房名称  #1 起始时间  #2结束时间 -->
+	select  DocTagName,avg(docvalue) valueavg,datepart(hh,DataTime) hh from DocData where  DocTagName=#{0}  and DataTime Between #{1} and #{2} and datepart(hh,DataTime) in(select datepart(hh,DataTime) from DocData  ) group by datepart(hh,DataTime), DocTagName
+  
+  </select>
 </mapper>

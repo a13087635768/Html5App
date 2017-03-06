@@ -3,6 +3,9 @@ package com.html5app.docdata.mapper;
 import com.html5app.docdata.entity.Docdata;
 import com.html5app.docdata.entity.DocdataExample;
 import com.html5app.docdata.entity.DocdataKey;
+import com.html5app.docdata.entity.DocdataTimeAvgValue;
+
+import java.util.Date;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
@@ -28,4 +31,9 @@ public interface DocdataMapper {
     int updateByPrimaryKeySelective(Docdata record);
 
     int updateByPrimaryKey(Docdata record);
+//    暂时没用 使用时请删除此注释
+    List<Docdata> selecttimeandname(Date date ,Date newdate,String name);
+
+    List<DocdataTimeAvgValue> selectavgvalue(String name,Date date ,Date enddate);
+    
 }
